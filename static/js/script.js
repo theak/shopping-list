@@ -1,4 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize pull-to-refresh
+    PullToRefresh.init({
+        mainElement: 'body',
+        onRefresh() {
+            window.location.reload();
+        }
+    });
+    
     // Add click handlers to initial incomplete items
     const incompleteItems = document.querySelectorAll('.item.incomplete');
     incompleteItems.forEach(item => {
