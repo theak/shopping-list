@@ -8,7 +8,7 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; 
     background: #f5f5f5;
     min-height: 100vh;
-    padding: 20px;
+    padding: 10px;
 }
 
 .container {
@@ -22,7 +22,7 @@ body {
 
 .header { 
     background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    padding: 30px;
+    padding: 20px;
     color: white;
     display: flex; 
     justify-content: space-between; 
@@ -30,13 +30,13 @@ body {
 }
 
 h1 { 
-    font-size: 32px; 
+    font-size: 26px; 
     font-weight: 700;
     text-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .content { 
-    padding: 30px; 
+    padding: 20px; 
 }
 
 .item { 
@@ -79,13 +79,13 @@ h1 {
 .edit-button { 
     display: inline-flex; 
     align-items: center; 
-    gap: 8px; 
-    padding: 12px 24px; 
+    gap: 6px; 
+    padding: 10px 18px; 
     background: rgba(255,255,255,0.2); 
     color: white; 
     text-decoration: none; 
     border-radius: 25px; 
-    font-size: 16px; 
+    font-size: 14px; 
     font-weight: 600;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255,255,255,0.3);
