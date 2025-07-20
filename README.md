@@ -30,9 +30,16 @@ services:
     ports:
       - "42780:42780"
     environment:
-      - HA_URL=http://your-ha-url:8123
-      - HA_TOKEN=your-long-lived-token
+      - HA_URL=${HA_URL}
+      - HA_TOKEN=${HA_TOKEN}
     restart: unless-stopped
+```
+
+Set your environment variables on the host:
+
+```bash
+export HA_URL="http://your-ha-url:8123"
+export HA_TOKEN="your-long-lived-token"
 ```
 
 Then run:
@@ -40,6 +47,16 @@ Then run:
 ```bash
 docker compose up -d
 ```
+
+**Alternative:** Create a `.env` file in the same directory:
+
+```bash
+# .env file
+HA_URL=http://your-ha-url:8123
+HA_TOKEN=your-long-lived-token
+```
+
+Docker Compose will automatically load these variables.
 
 ## Manual Setup
 
