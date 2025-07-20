@@ -1,6 +1,6 @@
 services:
   shopping-list:
-    build: .
+    image: akshaykannan/shopping-list
     ports:
       - "42780:42780"
     environment:

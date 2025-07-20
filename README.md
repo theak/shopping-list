@@ -10,23 +10,22 @@ A simple vibe coded web proxy that displays your Home Assistant shopping list in
 ## Quick Start with Docker
 
 ```bash
-docker build . -t shopping-list
 docker run -p 42780:42780 \
   -e HA_URL="http://your-ha-url:8123" \
   -e HA_TOKEN="your-long-lived-token" \
-  shopping-list
+  akshaykannan/shopping-list
 ```
 
 Visit `http://localhost:42780`
 
-## Docker Compose
+## Docker Compose (Recommended)
 
 Create a `docker-compose.yml`:
 
 ```yaml
 services:
   shopping-list:
-    build: .
+    image: akshaykannan/shopping-list
     ports:
       - "42780:42780"
     environment:
@@ -35,20 +34,7 @@ services:
     restart: unless-stopped
 ```
 
-Set your environment variables on the host:
-
-```bash
-export HA_URL="http://your-ha-url:8123"
-export HA_TOKEN="your-long-lived-token"
-```
-
-Then run:
-
-```bash
-docker compose up -d
-```
-
-**Alternative:** Create a `.env` file in the same directory:
+Create a `.env` file:
 
 ```bash
 # .env file
@@ -56,24 +42,10 @@ HA_URL=http://your-ha-url:8123
 HA_TOKEN=your-long-lived-token
 ```
 
-Docker Compose will automatically load these variables.
+Then run:
 
-## Manual Setup
-
-1. Install dependencies:
 ```bash
-pip install -r requirements.txt
-```
-
-2. Set environment variables:
-```bash
-export HA_URL="http://your-ha-url:8123"
-export HA_TOKEN="your-long-lived-token"
-```
-
-3. Run the app:
-```bash
-python app.py
+docker compose up -d
 ```
 
 ## Getting a Home Assistant Token
@@ -84,8 +56,27 @@ python app.py
 4. Give it a name and copy the token
 5. Use this token as your `HA_TOKEN`
 
+## Features
+
+- 🛒 Display shopping list items from Home Assistant
+- ✅ Click items to mark as completed (local only)
+- ↩️ Click completed items to mark as incomplete
+- 📝 Direct link to edit list in Home Assistant
+- 🎨 Modern, responsive design
+
 ## Notes
 
 - Item completion status is local only and resets on page refresh
 - The "Edit" button opens the Home Assistant todo interface
 - Requires Home Assistant's shopping list integration to be enabled
+- Supports ARM64 and AMD64 architectures
+
+---
+
+## Development
+
+To build from source:
+
+```bash
+docker build . -t shopping-list
+```
