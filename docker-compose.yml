@@ -1,0 +1,9 @@
+services:
+  shopping-list:
+    build: .
+    ports:
+      - "42780:42780"
+    environment:
+      - HA_URL=http://your-ha-url:8123
+      - HA_TOKEN=your-long-lived-token
+    restart: unless-stopped
