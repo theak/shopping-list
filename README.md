@@ -1,6 +1,8 @@
 # Home Assistant Shopping List Proxy
 
-A minimal web app to surface your Home Assistant shopping list entity in a read-only way to the public internet so you can view it externally when you're out shopping, without exposing much else.
+A minimal web app to surface your Home Assistant shopping list entity in a read-only way to the public internet so you can view it externally when you're out on the go, without exposing much else.
+
+<img width="451" height="417" alt="image" src="https://github.com/user-attachments/assets/e965e50d-c96c-4c62-b3af-529f68de0402" />
 
 ## Environment Variables
 
