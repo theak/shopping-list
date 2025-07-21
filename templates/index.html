@@ -29,9 +29,7 @@
             {% else %}
                 {% if incomplete_items %}
                     {% for item in incomplete_items %}
-                        <div class="item incomplete">
-                            <strong>{{ item.name }}</strong>
-                        </div>
+                        <div class="item incomplete">{{ item.name }}</div>
                     {% endfor %}
                 {% else %}
                     <div class="empty-state">🎉 All items completed!</div>
