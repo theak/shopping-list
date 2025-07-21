@@ -18,7 +18,7 @@ docker run -p 42780:42780 \
 
 Visit `http://localhost:42780`
 
-## Docker Compose (Recommended)
+## Or Use Docker Compose
 
 Create a `docker-compose.yml`:
 
@@ -66,10 +66,9 @@ docker compose up -d
 
 ## Notes
 
-- Item completion status is local only and resets on page refresh
-- The "Edit" button opens the Home Assistant todo interface
+- Item completion status is local only and resets on page refresh (this app is read-only and will not expose write access to the public internet)
+- The "Edit" button opens the Home Assistant todo interface locally (will only work on your local network)
 - Requires Home Assistant's shopping list integration to be enabled
-- Supports ARM64 and AMD64 architectures
 
 ---
 
