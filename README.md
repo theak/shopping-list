@@ -1,6 +1,6 @@
 # Home Assistant Shopping List Proxy
 
-A simple vibe coded web proxy that displays your Home Assistant shopping list in a clean, modern interface with local completion toggling.
+A minimal web app to surface your Home Assistant shopping list entity in a read-only way to the public internet so you can view it externally when you're out shopping, without exposing much else.
 
 ## Environment Variables
 
