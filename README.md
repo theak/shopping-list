@@ -8,6 +8,7 @@ A minimal web app to surface your Home Assistant shopping list entity in a read-
 
 - `HA_URL` - Your Home Assistant URL (e.g., `http://homeassistant.local:8123`)
 - `HA_TOKEN` - Your Home Assistant Long-lived Access Token
+- `SHOPPING_LIST_KEY` (optional) - Require ?key= parameter for access
 
 ## Quick Start with Docker
 
@@ -15,10 +16,11 @@ A minimal web app to surface your Home Assistant shopping list entity in a read-
 docker run -p 42780:42780 \
   -e HA_URL="http://your-ha-url:8123" \
   -e HA_TOKEN="your-long-lived-token" \
+  -e SHOPPING_LIST_KEY="your-secret-key" \
   akshaykannan/shopping-list
 ```
 
-Visit `http://localhost:42780`
+Visit `http://localhost:42780?key=your-secret-key`
 
 ## Or Use Docker Compose
 
@@ -33,6 +35,7 @@ services:
     environment:
       - HA_URL=${HA_URL}
       - HA_TOKEN=${HA_TOKEN}
+      - SHOPPING_LIST_KEY=${SHOPPING_LIST_KEY}
     restart: unless-stopped
 ```
 
@@ -42,6 +45,7 @@ Create a `.env` file:
 # .env file
 HA_URL=http://your-ha-url:8123
 HA_TOKEN=your-long-lived-token
+SHOPPING_LIST_KEY=your-secret-key
 ```
 
 Then run:
@@ -61,16 +65,15 @@ docker compose up -d
 ## Features
 
 - 🛒 Display shopping list items from Home Assistant
-- ✅ Click items to mark as completed (local only)
-- ↩️ Click completed items to mark as incomplete
-- 📝 Direct link to edit list in Home Assistant
+- ✅ Click items to mark as completed/incomplete (syncs with HA)
+- ➕ Add new items directly in the app
+- 🔒 Optional key-based authentication
 - 🎨 Modern, responsive design
 
 ## Notes
 
-- Item completion status is local only and resets on page refresh (this app is read-only and will not expose write access to the public internet)
-- The "Edit" button opens the Home Assistant todo interface locally (will only work on your local network)
 - Requires Home Assistant's shopping list integration to be enabled
+- If `SHOPPING_LIST_KEY` is set, all access requires `?key=your-secret-key` parameter
 
 ---
 

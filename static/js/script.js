@@ -1,4 +1,9 @@
+// Get auth key from URL if present
+const urlParams = new URLSearchParams(window.location.search);
+const authKey = urlParams.get('key');
+
 document.addEventListener('DOMContentLoaded', function() {
+    
     // Initialize pull-to-refresh
     PullToRefresh.init({
         mainElement: 'body',
@@ -62,8 +67,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function syncWithServer(itemName, markComplete) {
     const endpoint = markComplete ? '/api/complete_item' : '/api/incomplete_item';
+    const url = authKey ? `${endpoint}?key=${encodeURIComponent(authKey)}` : endpoint;
     
-    fetch(endpoint, {
+    fetch(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -91,7 +97,9 @@ function addItem(itemName) {
     submitButton.disabled = true;
     submitButton.textContent = 'Adding...';
     
-    fetch('/api/add_item', {
+    const url = authKey ? `/api/add_item?key=${encodeURIComponent(authKey)}` : '/api/add_item';
+    
+    fetch(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

@@ -2,9 +2,21 @@
 import os
 import re
 import requests
+from functools import wraps
 from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__)
+
+def require_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        required_key = os.getenv('SHOPPING_LIST_KEY')
+        if required_key:
+            provided_key = request.args.get('key')
+            if not provided_key or provided_key != required_key:
+                return jsonify({'error': 'Authentication required'}), 403
+        return f(*args, **kwargs)
+    return decorated
 
 def validate_item_name(name):
     """Validate item name for security and sanity"""
@@ -86,6 +98,7 @@ def handle_item_request(service_name, error_message="Failed to update item", ext
         return jsonify({'error': error_message}), 500
 
 @app.route('/')
+@require_auth
 def shopping_list():
     ha_url = os.getenv('HA_URL')
     ha_token = os.getenv('HA_TOKEN')
@@ -118,14 +131,17 @@ def shopping_list():
         return render_template('index.html', error='Unable to load shopping list')
 
 @app.route('/api/complete_item', methods=['POST'])
+@require_auth
 def complete_item():
     return handle_item_request('complete_item')
 
 @app.route('/api/incomplete_item', methods=['POST'])
+@require_auth
 def incomplete_item():
     return handle_item_request('incomplete_item')
 
 @app.route('/api/add_item', methods=['POST'])
+@require_auth
 def add_item():
     # For add_item, we need to include the item data in the response
     extra_response_func = lambda item_name: {'item': {'name': item_name, 'complete': False}}
