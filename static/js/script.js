@@ -7,200 +7,158 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Add click handlers to initial incomplete items
-    const incompleteItems = document.querySelectorAll('.item.incomplete');
-    incompleteItems.forEach(item => {
-        addIncompleteClickHandler(item);
+    // Add item form handling
+    const addButton = document.getElementById('add-button');
+    const addForm = document.getElementById('add-form');
+    const addInput = document.getElementById('add-input');
+    const submitButton = document.getElementById('submit-add');
+    const cancelButton = document.getElementById('cancel-add');
+    
+    addButton.addEventListener('click', function() {
+        addForm.style.display = 'block';
+        addInput.focus();
     });
     
-    // Add click handlers to initial complete items
-    const completeItems = document.querySelectorAll('.item.complete');
-    completeItems.forEach(item => {
-        addCompleteClickHandler(item);
+    cancelButton.addEventListener('click', function() {
+        addForm.style.display = 'none';
+        addInput.value = '';
+    });
+    
+    submitButton.addEventListener('click', function() {
+        const itemName = addInput.value.trim();
+        if (itemName) {
+            addItem(itemName);
+        }
+    });
+    
+    addInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            const itemName = addInput.value.trim();
+            if (itemName) {
+                addItem(itemName);
+            }
+        }
+    });
+    
+    // Single event delegation for all items
+    document.querySelector('.content').addEventListener('click', function(e) {
+        const item = e.target.closest('.item');
+        if (!item) return;
+        
+        const itemName = item.dataset.name;
+        const isComplete = item.classList.contains('complete');
+        
+        // Toggle UI immediately
+        item.classList.toggle('complete');
+        item.classList.toggle('incomplete');
+        
+        // Sync with server
+        syncWithServer(itemName, !isComplete);
+        
+        // Update sections visibility
+        updateSectionsVisibility();
     });
 });
 
-function addIncompleteClickHandler(item) {
-    item.style.cursor = 'pointer';
-    item.title = 'Click to mark as completed';
+function syncWithServer(itemName, markComplete) {
+    const endpoint = markComplete ? '/api/complete_item' : '/api/incomplete_item';
     
-    item.addEventListener('click', function() {
-        // Get item name (remove any leading/trailing whitespace)
-        const itemName = item.textContent.trim();
-        
-        // Update UI immediately for responsiveness
-        item.classList.remove('incomplete');
-        item.classList.add('complete');
-        
-        // Add strikethrough to text
-        const text = item.querySelector('strong');
-        if (text) {
-            text.outerHTML = `<s>${text.innerHTML}</s>`;
+    fetch(endpoint, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: itemName })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (!data.success) {
+            console.error('Failed to sync with server:', data.error);
+            // Could revert the change here if needed
         }
-        
-        // Move to completed section and add new click handler
-        const newItem = moveToCompletedSection(item);
-        addCompleteClickHandler(newItem);
-        
-        // Sync with server
-        fetch('/api/complete_item', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ name: itemName })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (!data.success) {
-                console.error('Failed to sync with server:', data.error);
-                // Optionally revert UI change on failure
-            }
-        })
-        .catch(error => {
-            console.error('Error syncing with server:', error);
-        });
+    })
+    .catch(error => {
+        console.error('Error syncing with server:', error);
     });
 }
 
-function addCompleteClickHandler(item) {
-    item.style.cursor = 'pointer';
-    item.title = 'Click to mark as incomplete';
+function addItem(itemName) {
+    const addForm = document.getElementById('add-form');
+    const addInput = document.getElementById('add-input');
+    const submitButton = document.getElementById('submit-add');
     
-    item.addEventListener('click', function() {
-        // Get item name (remove any leading/trailing whitespace and strikethrough)
-        let itemName = item.textContent.trim();
-        
-        // Update UI immediately for responsiveness
-        item.classList.remove('complete');
-        item.classList.add('incomplete');
-        
-        // Remove strikethrough from text
-        const text = item.querySelector('s');
-        if (text) {
-            text.outerHTML = `<strong>${text.innerHTML}</strong>`;
-        }
-        
-        // Move back to incomplete section and add click handler
-        const newItem = moveToIncompleteSection(item);
-        addIncompleteClickHandler(newItem);
-        
-        // Sync with server
-        fetch('/api/incomplete_item', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ name: itemName })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (!data.success) {
-                console.error('Failed to sync with server:', data.error);
-                // Optionally revert UI change on failure
-            }
-        })
-        .catch(error => {
-            console.error('Error syncing with server:', error);
-        });
-    });
-}
-
-function moveToCompletedSection(item) {
-    // Check if completed section exists
-    let completedSection = document.querySelector('.completed-section');
+    // Disable form during request
+    submitButton.disabled = true;
+    submitButton.textContent = 'Adding...';
     
-    if (!completedSection) {
-        // Create completed section
-        const content = document.querySelector('.content');
-        const sectionTitle = document.createElement('div');
-        sectionTitle.className = 'section-title';
-        sectionTitle.textContent = 'Completed Items';
-        
-        completedSection = document.createElement('div');
-        completedSection.className = 'completed-section';
-        
-        content.appendChild(sectionTitle);
-        content.appendChild(completedSection);
-    }
-    
-    // Remove all event listeners by cloning
-    const newItem = item.cloneNode(true);
-    item.parentNode.replaceChild(newItem, item);
-    
-    // Move item to completed section
-    completedSection.appendChild(newItem);
-    
-    // Check if all items are now completed
-    const incompleteContainer = document.querySelector('.incomplete-container');
-    const incompleteItems = document.querySelectorAll('.item.incomplete');
-    if (incompleteItems.length === 0) {
-        // Show "All items completed" message
-        if (!document.querySelector('.empty-state')) {
-            const emptyState = document.createElement('div');
-            emptyState.className = 'empty-state';
-            emptyState.textContent = '🎉 All items completed!';
-            
+    fetch('/api/add_item', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: itemName })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Add item to DOM immediately
             const content = document.querySelector('.content');
-            const sectionTitle = document.querySelector('.section-title');
-            if (sectionTitle) {
-                content.insertBefore(emptyState, sectionTitle);
-            } else {
-                content.insertBefore(emptyState, content.firstChild);
+            const emptyState = document.querySelector('.empty-state');
+            
+            // Hide empty state if visible
+            if (emptyState) {
+                emptyState.style.display = 'none';
             }
+            
+            // Create new item element
+            const newItem = document.createElement('div');
+            newItem.className = 'item incomplete';
+            newItem.dataset.name = data.item.name;
+            newItem.textContent = data.item.name;
+            
+            // Find where to insert (before completed items or section title)
+            const sectionTitle = document.querySelector('.section-title');
+            const firstCompleteItem = document.querySelector('.item.complete');
+            
+            if (sectionTitle && sectionTitle.style.display !== 'none') {
+                content.insertBefore(newItem, sectionTitle);
+            } else if (firstCompleteItem) {
+                content.insertBefore(newItem, firstCompleteItem);
+            } else {
+                content.appendChild(newItem);
+            }
+            
+            // Reset form
+            addForm.style.display = 'none';
+            addInput.value = '';
+        } else {
+            alert(data.error || 'Failed to add item');
         }
-        
-        // Remove empty incomplete container if it exists
-        if (incompleteContainer && incompleteContainer.children.length === 0) {
-            incompleteContainer.remove();
-        }
-    }
-    
-    return newItem;
+    })
+    .catch(error => {
+        console.error('Error adding item:', error);
+        alert('Failed to add item');
+    })
+    .finally(() => {
+        // Re-enable form
+        submitButton.disabled = false;
+        submitButton.textContent = 'Add';
+    });
 }
 
-function moveToIncompleteSection(item) {
-    // Remove "All items completed" message if it exists
+function updateSectionsVisibility() {
+    const incompleteItems = document.querySelectorAll('.item.incomplete');
+    const completeItems = document.querySelectorAll('.item.complete');
     const emptyState = document.querySelector('.empty-state');
+    const completedTitle = document.querySelector('.section-title');
+    
+    // Show/hide empty state
     if (emptyState) {
-        emptyState.remove();
+        emptyState.style.display = incompleteItems.length === 0 ? 'block' : 'none';
     }
     
-    // Find the incomplete items container or create one
-    let incompleteContainer = document.querySelector('.incomplete-container');
-    
-    if (!incompleteContainer) {
-        // Find where to insert incomplete items (before completed section)
-        const content = document.querySelector('.content');
-        const completedTitle = content.querySelector('.section-title');
-        
-        incompleteContainer = document.createElement('div');
-        incompleteContainer.className = 'incomplete-container';
-        
-        if (completedTitle) {
-            content.insertBefore(incompleteContainer, completedTitle);
-        } else {
-            content.appendChild(incompleteContainer);
-        }
+    // Show/hide completed section title
+    if (completedTitle) {
+        completedTitle.style.display = completeItems.length > 0 ? 'block' : 'none';
     }
-    
-    // Remove all event listeners by cloning
-    const newItem = item.cloneNode(true);
-    item.parentNode.replaceChild(newItem, item);
-    
-    // Move item to incomplete section
-    incompleteContainer.appendChild(newItem);
-    
-    // Check if completed section is now empty and remove it
-    const completedSection = document.querySelector('.completed-section');
-    if (completedSection && completedSection.children.length === 0) {
-        completedSection.remove();
-        // Also remove the section title
-        const sectionTitle = document.querySelector('.section-title');
-        if (sectionTitle) {
-            sectionTitle.remove();
-        }
-    }
-    
-    return newItem;
 }

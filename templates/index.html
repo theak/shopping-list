@@ -16,33 +16,38 @@
     <div class="container">
         <div class="header">
             <h1>Shopping List</h1>
-            {% if ha_url %}
-            <a href="{{ ha_url }}/todo?entity_id=todo.shopping_list" class="edit-button" title="Add Item">
+            <button class="edit-button" id="add-button" title="Add Item">
                 ➕ Add
-            </a>
-            {% endif %}
+            </button>
+        </div>
+        
+        <div class="add-form" id="add-form" style="display: none;">
+            <div class="add-input-container">
+                <input type="text" id="add-input" placeholder="Enter item name" maxlength="100">
+                <button id="submit-add" class="submit-button">Add</button>
+                <button id="cancel-add" class="cancel-button">Cancel</button>
+            </div>
         </div>
         
         <div class="content">
             {% if error %}
                 <div class="error">{{ error }}</div>
             {% else %}
-                {% if incomplete_items %}
-                    {% for item in incomplete_items %}
-                        <div class="item incomplete">{{ item.name }}</div>
-                    {% endfor %}
-                {% else %}
-                    <div class="empty-state">🎉 All items completed!</div>
-                {% endif %}
+                <div class="empty-state" {% if incomplete_items %}style="display: none;"{% endif %}>
+                    🎉 All items completed!
+                </div>
                 
-                {% if complete_items %}
-                    <div class="section-title">Completed Items</div>
-                    {% for item in complete_items %}
-                        <div class="item complete">
-                            <s>{{ item.name }}</s>
-                        </div>
-                    {% endfor %}
-                {% endif %}
+                {% for item in incomplete_items %}
+                    <div class="item incomplete" data-name="{{ item.name }}">{{ item.name }}</div>
+                {% endfor %}
+                
+                <div class="section-title" {% if not complete_items %}style="display: none;"{% endif %}>
+                    Completed Items
+                </div>
+                
+                {% for item in complete_items %}
+                    <div class="item complete" data-name="{{ item.name }}">{{ item.name }}</div>
+                {% endfor %}
             {% endif %}
         </div>
     </div>
