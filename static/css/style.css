@@ -51,6 +51,7 @@ h1 {
     display: flex;
     align-items: center;
     gap: 16px;
+    position: relative;
 }
 
 .incomplete { 
@@ -60,45 +61,71 @@ h1 {
     order: 1; /* Keep incomplete items first */
 }
 
-.incomplete::before {
-    content: '';
-    width: 20px;
-    height: 20px;
-    border: 2px solid #e0e0e0;
-    border-radius: 4px;
-    flex-shrink: 0;
-}
-
 .incomplete:hover {
     background: #f5f5f5;
-    cursor: pointer;
-}
-
-.incomplete:hover::before {
-    border-color: #1976d2;
 }
 
 .complete { 
     background: white;
     color: #757575; 
-    cursor: pointer;
     text-decoration: line-through;
     order: 2; /* Push completed items after incomplete ones */
 }
 
-.complete::before {
-    content: '✓';
-    width: 20px;
-    height: 20px;
-    background: #4caf50;
-    color: white;
+.complete:hover {
+    background: #f5f5f5;
+}
+
+/* Checkbox styles */
+.item-checkbox {
+    width: 24px;
+    height: 24px;
+    border: 2px solid #e0e0e0;
     border-radius: 4px;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
-    flex-shrink: 0;
 }
+
+.incomplete .item-checkbox:hover {
+    border-color: #1976d2;
+}
+
+.complete .item-checkbox {
+    background: #4caf50;
+    border-color: #4caf50;
+    color: white;
+}
+
+.complete .item-checkbox:before {
+    content: '✓';
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* Text area styles */
+.item-text {
+    flex: 1;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+    min-height: 24px;
+    display: flex;
+    align-items: center;
+}
+
+.incomplete .item-text:hover {
+    background: rgba(25, 118, 210, 0.1);
+}
+
+.complete .item-text {
+    cursor: default;
+}
+
 
 .error { 
     color: #f44336; 
@@ -203,4 +230,69 @@ h1 {
     font-size: 16px;
     font-weight: 400;
     order: 0; /* Keep at the top */
+}
+
+/* Edit functionality styles */
+
+.edit-form {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: white;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 24px;
+    border-bottom: 1px solid #e0e0e0;
+    z-index: 10;
+}
+
+.edit-input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    font-size: 16px;
+    font-family: inherit;
+}
+
+.edit-input:focus {
+    outline: none;
+    border-color: #1976d2;
+    box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+}
+
+.save-edit-btn, .cancel-edit-btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.save-edit-btn {
+    background: #4caf50;
+    color: white;
+}
+
+.save-edit-btn:hover {
+    background: #45a049;
+}
+
+.save-edit-btn:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+}
+
+.cancel-edit-btn {
+    background: #f44336;
+    color: white;
+}
+
+.cancel-edit-btn:hover {
+    background: #da190b;
 }

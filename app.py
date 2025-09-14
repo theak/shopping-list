@@ -82,9 +82,9 @@ def handle_item_request(service_name, error_message="Failed to update item", ext
             return jsonify({'error': result}), 400
         
         item_name = result
+        service_data = {'name': item_name}
         
         # Call Home Assistant service
-        service_data = {'name': item_name}
         call_ha_service(ha_url, ha_token, service_name, service_data)
         
         # Build response
@@ -146,6 +146,45 @@ def add_item():
     # For add_item, we need to include the item data in the response
     extra_response_func = lambda item_name: {'item': {'name': item_name, 'complete': False}}
     return handle_item_request('add_item', 'Failed to add item', extra_response_func)
+
+@app.route('/api/update_item', methods=['POST'])
+@require_auth
+def update_item():
+    """Update an item by removing the old one and adding the new one"""
+    # Get configuration
+    ha_url, ha_token, config_error = get_ha_config()
+    if config_error:
+        return jsonify({'error': config_error}), 500
+    
+    try:
+        # Get and validate input
+        data = request.get_json()
+        old_name = data.get('old_name')
+        new_name = data.get('new_name')
+        
+        is_valid_old, result_old = validate_item_name(old_name)
+        if not is_valid_old:
+            return jsonify({'error': f"Old item name: {result_old}"}), 400
+        
+        is_valid_new, result_new = validate_item_name(new_name)
+        if not is_valid_new:
+            return jsonify({'error': f"New item name: {result_new}"}), 400
+        
+        # Remove the old item and add the new one
+        # (Only incomplete items can be edited, so no need to preserve completion state)
+        remove_data = {'name': result_old}
+        call_ha_service(ha_url, ha_token, 'remove_item', remove_data)
+        
+        add_data = {'name': result_new}
+        call_ha_service(ha_url, ha_token, 'add_item', add_data)
+        
+        return jsonify({
+            'success': True, 
+            'item': {'name': result_new}
+        })
+        
+    except Exception as e:
+        return jsonify({'error': 'Failed to update item'}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=42780, debug=False)

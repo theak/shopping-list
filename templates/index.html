@@ -38,7 +38,15 @@
                 </div>
                 
                 {% for item in incomplete_items %}
-                    <div class="item incomplete" data-name="{{ item.name }}">{{ item.name }}</div>
+                    <div class="item incomplete" data-name="{{ item.name }}">
+                        <div class="item-checkbox"></div>
+                        <div class="item-text">{{ item.name }}</div>
+                        <div class="edit-form" style="display: none;">
+                            <input type="text" class="edit-input" value="{{ item.name }}" maxlength="100">
+                            <button class="save-edit-btn">Save</button>
+                            <button class="cancel-edit-btn">Cancel</button>
+                        </div>
+                    </div>
                 {% endfor %}
                 
                 <div class="section-title" {% if not complete_items %}style="display: none;"{% endif %}>
@@ -46,7 +54,10 @@
                 </div>
                 
                 {% for item in complete_items %}
-                    <div class="item complete" data-name="{{ item.name }}">{{ item.name }}</div>
+                    <div class="item complete" data-name="{{ item.name }}">
+                        <div class="item-checkbox"></div>
+                        <div class="item-text">{{ item.name }}</div>
+                    </div>
                 {% endfor %}
             {% endif %}
         </div>
