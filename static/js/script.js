@@ -2,6 +2,21 @@
 const urlParams = new URLSearchParams(window.location.search);
 const authKey = urlParams.get('key');
 
+// Track when page was hidden for stale-data reload
+let hiddenAt = null;
+
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') {
+        hiddenAt = Date.now();
+    } else if (document.visibilityState === 'visible' && hiddenAt) {
+        // Reload if away for more than 30 seconds
+        if (Date.now() - hiddenAt > 30000) {
+            window.location.reload();
+        }
+        hiddenAt = null;
+    }
+});
+
 document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize pull-to-refresh
