@@ -17,6 +17,13 @@ document.addEventListener('visibilitychange', () => {
     }
 });
 
+// Refresh every 60 seconds
+setTimeout(() => {
+    if (document.visibilityState === 'visible') {
+        window.location.reload();
+    }
+}, 60000);
+
 document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize pull-to-refresh
