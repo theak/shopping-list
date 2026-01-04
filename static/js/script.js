@@ -9,8 +9,8 @@ document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden') {
         hiddenAt = Date.now();
     } else if (document.visibilityState === 'visible' && hiddenAt) {
-        // Reload if away for more than 30 seconds
-        if (Date.now() - hiddenAt > 30000) {
+        // Reload if away for more than 15 seconds
+        if (Date.now() - hiddenAt > 15000) {
             window.location.reload();
         }
         hiddenAt = null;
