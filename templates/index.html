@@ -1,66 +1,70 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" data-theme="light">
 <head>
     <title>Shopping List</title>
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/icon.png') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/icon.png') }}">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Shopping List">
+    <meta name="theme-color" content="#1976d2">
+    <link rel="manifest" href="{{ url_for('manifest', key=request.args.get('key')) }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pico.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <script src="https://cdn.jsdelivr.net/npm/pulltorefreshjs@0.1.22/dist/index.umd.min.js"></script>
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/alpine.min.js') }}"></script>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Shopping List</h1>
-            <button class="edit-button" id="add-button" title="Add Item">
-                ➕ Add
-            </button>
-        </div>
-        
-        <div class="add-form" id="add-form" style="display: none;">
-            <div class="add-input-container">
-                <input type="text" autocapitalize="off" id="add-input" placeholder="Enter item name" maxlength="100">
-                <button id="submit-add" class="submit-button">Add</button>
-                <button id="cancel-add" class="cancel-button">Cancel</button>
+    <main class="container" x-data="list" x-cloak>
+        <div class="offline-banner" x-show="offline"
+             x-text="lastSync ? `Offline: last synced ${lastSync}` : 'Offline'"></div>
+
+        <div class="card">
+            <div class="card-header">
+                <h1>Shopping List</h1>
+            </div>
+            <div class="card-body">
+                <form role="group" @submit.prevent="add()">
+                    <input type="text" x-model="newItem" placeholder="Add an item"
+                           maxlength="100" autocapitalize="off" autocomplete="off">
+                    <button type="submit">Add</button>
+                </form>
+
+                <ul class="list">
+                    <template x-for="item in incomplete" :key="item.name">
+                        <li>
+                            <input type="checkbox" :checked="item.complete" @change="toggle(item)">
+                            <span class="name" x-show="editing !== item.name" @click="startEdit(item)"
+                                  x-text="item.name"></span>
+                            <span class="edit" x-show="editing === item.name">
+                                <input type="text" x-model="editText" maxlength="100"
+                                       @keydown.enter="save(item)" @keydown.escape="cancelEdit()">
+                                <button @click="save(item)">Save</button>
+                                <button class="secondary" @click="cancelEdit()">Cancel</button>
+                            </span>
+                        </li>
+                    </template>
+                </ul>
+
+                <p x-show="!incomplete.length" class="empty">🎉 All items completed!</p>
+
+                <template x-if="complete.length">
+                    <section>
+                        <h2 class="section-title">Completed</h2>
+                        <ul class="list">
+                            <template x-for="item in complete" :key="item.name">
+                                <li>
+                                    <input type="checkbox" :checked="item.complete" @change="toggle(item)">
+                                    <s class="name" x-text="item.name"></s>
+                                </li>
+                            </template>
+                        </ul>
+                    </section>
+                </template>
             </div>
         </div>
-        
-        <div class="content">
-            {% if error %}
-                <div class="error">{{ error }}</div>
-            {% else %}
-                <div class="empty-state" {% if incomplete_items %}style="display: none;"{% endif %}>
-                    🎉 All items completed!
-                </div>
-                
-                {% for item in incomplete_items %}
-                    <div class="item incomplete" data-name="{{ item.name }}">
-                        <div class="item-checkbox"></div>
-                        <div class="item-text">{{ item.name }}</div>
-                        <div class="edit-form" style="display: none;">
-                            <input type="text" class="edit-input" value="{{ item.name }}" maxlength="100">
-                            <button class="save-edit-btn">Save</button>
-                            <button class="cancel-edit-btn">Cancel</button>
-                        </div>
-                    </div>
-                {% endfor %}
-                
-                <div class="section-title" {% if not complete_items %}style="display: none;"{% endif %}>
-                    Completed Items
-                </div>
-                
-                {% for item in complete_items %}
-                    <div class="item complete" data-name="{{ item.name }}">
-                        <div class="item-checkbox"></div>
-                        <div class="item-text">{{ item.name }}</div>
-                    </div>
-                {% endfor %}
-            {% endif %}
-        </div>
-    </div>
+    </main>
 </body>
 </html>

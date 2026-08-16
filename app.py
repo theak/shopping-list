@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 import os
 import re
+import json
 import requests
 from functools import wraps
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, Response, send_from_directory
 
 app = Flask(__name__)
 
@@ -97,38 +98,60 @@ def handle_item_request(service_name, error_message="Failed to update item", ext
     except Exception as e:
         return jsonify({'error': error_message}), 500
 
+def fetch_ha_items():
+    """Fetch the raw shopping list from Home Assistant. Raises on config/HTTP error."""
+    ha_url, ha_token, err = get_ha_config()
+    if err:
+        raise RuntimeError(err)
+
+    response = requests.get(
+        f"{ha_url}/api/shopping_list",
+        headers=create_ha_headers(ha_token)
+    )
+    response.raise_for_status()
+    return response.json()
+
 @app.route('/')
 @require_auth
 def shopping_list():
-    ha_url = os.getenv('HA_URL')
-    ha_token = os.getenv('HA_TOKEN')
-    
-    if not ha_url:
-        return render_template('index.html', error='HA_URL environment variable not set')
-    
-    if not ha_token:
-        return render_template('index.html', error='HA_TOKEN environment variable not set')
-    
+    # The page is a shell; the client fetches the list from /api/items.
+    return render_template('index.html')
+
+@app.route('/api/items')
+@require_auth
+def api_items():
+    """JSON read endpoint used by the client for in-place auto-refresh."""
     try:
-        headers = {
-            'Authorization': f'Bearer {ha_token}',
-            'Content-Type': 'application/json'
-        }
-        
-        response = requests.get(f"{ha_url}/api/shopping_list", headers=headers)
-        response.raise_for_status()
-        
-        items = response.json()
-        
-        incomplete_items = [item for item in items if not item.get('complete', False)]
-        complete_items = [item for item in items if item.get('complete', False)]
-        
-        return render_template('index.html', 
-                                    incomplete_items=incomplete_items, 
-                                    complete_items=complete_items)
-        
+        return jsonify({'items': fetch_ha_items()})
     except Exception as e:
-        return render_template('index.html', error='Unable to load shopping list')
+        return jsonify({'error': 'Unable to load shopping list'}), 502
+
+@app.route('/sw.js')
+def service_worker():
+    """Serve the service worker from root so its scope covers '/'."""
+    resp = send_from_directory(app.static_folder, 'sw.js', mimetype='application/javascript')
+    resp.headers['Cache-Control'] = 'no-cache'
+    resp.headers['Service-Worker-Allowed'] = '/'
+    return resp
+
+@app.route('/manifest.json')
+def manifest():
+    """Templated so start_url can carry the ?key= auth param for homescreen launches."""
+    key = request.args.get('key')
+    data = {
+        "name": "Shopping List",
+        "short_name": "Shopping",
+        "start_url": f"/?key={key}" if key else "/",
+        "scope": "/",
+        "display": "standalone",
+        "background_color": "#f5f5f5",
+        "theme_color": "#1976d2",
+        "icons": [
+            {"src": "/static/img/icon.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+            {"src": "/static/img/icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"},
+        ],
+    }
+    return Response(json.dumps(data), mimetype='application/manifest+json')
 
 @app.route('/api/complete_item', methods=['POST'])
 @require_auth

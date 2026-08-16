@@ -1,298 +1,63 @@
-* { 
-    margin: 0; 
-    padding: 0; 
-    box-sizing: border-box; 
-}
+/* Hide the Alpine template until it initializes (prevents a flash of raw markup). */
+[x-cloak] { display: none !important; }
 
-body { 
-    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
-    background: #f5f5f5;
-    min-height: 100vh;
-    padding: 20px;
-    color: #212121;
-}
+body { background: #f5f5f5; }
+.container { max-width: 640px; padding-block: 1.5rem; }
 
-.container {
-    max-width: 600px;
-    margin: 0 auto;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+/* Card shell with a colored header. */
+.card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
     overflow: hidden;
 }
-
-.header { 
+.card-header {
     background: #1976d2;
-    padding: 24px;
-    color: white;
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center;
+    color: #fff;
+    padding: 1rem 1.25rem;
 }
+.card-header h1 { margin: 0; color: #fff; font-size: 1.4rem; }
+.card-body { padding: 1.25rem; }
+.card-body form { margin-bottom: 0.5rem; }
 
-h1 { 
-    font-size: 24px; 
-    font-weight: 500;
-    margin: 0;
-}
-
-.content { 
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-}
-
-.item { 
-    margin: 0; 
-    padding: 16px 24px; 
-    border-bottom: 1px solid #e0e0e0; 
-    transition: all 0.2s ease;
-    background: white;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    position: relative;
-}
-
-.incomplete { 
-    background: white;
-    color: #212121;
-    font-weight: 400;
-    order: 1; /* Keep incomplete items first */
-}
-
-.incomplete:hover {
-    background: #f5f5f5;
-}
-
-.complete { 
-    background: white;
-    color: #757575; 
-    text-decoration: line-through;
-    order: 2; /* Push completed items after incomplete ones */
-}
-
-.complete:hover {
-    background: #f5f5f5;
-}
-
-/* Checkbox styles */
-.item-checkbox {
-    width: 24px;
-    height: 24px;
-    border: 2px solid #e0e0e0;
-    border-radius: 4px;
-    flex-shrink: 0;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.incomplete .item-checkbox:hover {
-    border-color: #1976d2;
-}
-
-.complete .item-checkbox {
-    background: #4caf50;
-    border-color: #4caf50;
-    color: white;
-}
-
-.complete .item-checkbox:before {
-    content: '✓';
-    font-size: 14px;
-    font-weight: bold;
-}
-
-/* Text area styles */
-.item-text {
-    flex: 1;
-    cursor: pointer;
-    padding: 4px 8px;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
-    min-height: 24px;
-    display: flex;
-    align-items: center;
-}
-
-.incomplete .item-text:hover {
-    background: rgba(25, 118, 210, 0.1);
-}
-
-.complete .item-text {
-    cursor: default;
-}
-
-
-.error { 
-    color: #f44336; 
-    background: #ffebee;
-    border: 1px solid #ffcdd2;
-    padding: 16px 24px;
-    margin: 16px;
-    border-radius: 4px;
-    font-weight: 400;
-}
-
-.edit-button { 
-    display: inline-flex; 
-    align-items: center; 
-    gap: 8px; 
-    padding: 8px 16px; 
-    background: rgba(255,255,255,0.2); 
-    color: white; 
-    text-decoration: none; 
-    border-radius: 4px; 
-    font-size: 14px; 
-    font-weight: 500;
-    border: 1px solid rgba(255,255,255,0.3);
-    transition: all 0.2s ease;
-}
-
-.edit-button:hover { 
-    background: rgba(255,255,255,0.3); 
-}
-
-.add-form {
-    background: #f5f5f5;
-    border-bottom: 1px solid #e0e0e0;
-    padding: 16px 24px;
-}
-
-.add-input-container {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-}
-
-#add-input {
-    flex: 1;
-    padding: 12px 16px;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    font-size: 16px;
-    font-family: inherit;
-}
-
-#add-input:focus {
-    outline: none;
-    border-color: #1976d2;
-    box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
-}
-
-.submit-button, .cancel-button {
-    padding: 12px 16px;
-    border: none;
-    border-radius: 4px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.submit-button {
-    background: #1976d2;
-    color: white;
-}
-
-.submit-button:hover {
-    background: #1565c0;
-}
-
-.cancel-button {
-    background: #e0e0e0;
-    color: #757575;
-}
-
-.cancel-button:hover {
-    background: #d0d0d0;
-}
-
-.section-title {
-    font-size: 16px;
-    font-weight: 500;
-    color: #757575;
-    padding: 16px 24px 8px 24px;
-    margin: 0;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    order: 1.5; /* Place between incomplete and complete items */
-}
-
-
-.empty-state {
+/* Offline banner. */
+.offline-banner {
+    background: #ff9800;
+    color: #fff;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
     text-align: center;
-    padding: 48px 24px;
-    color: #757575;
-    font-size: 16px;
-    font-weight: 400;
-    order: 0; /* Keep at the top */
+    font-weight: 500;
+    margin-bottom: 1rem;
 }
 
-/* Edit functionality styles */
-
-.edit-form {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: white;
+/* List rows: checkbox + name on one line. */
+.list { list-style: none; padding: 0; margin: 0; }
+.list li {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 16px 24px;
-    border-bottom: 1px solid #e0e0e0;
-    z-index: 10;
+    gap: 0.75rem;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--pico-muted-border-color);
+}
+.list li:last-child { border-bottom: 0; }
+.list input[type="checkbox"] { margin: 0; flex-shrink: 0; }
+.list input[type="checkbox"]:checked { background-color: #43a047; border-color: #43a047; }
+
+.name { flex: 1; cursor: pointer; }
+.list s.name { cursor: default; color: var(--pico-muted-color); }
+
+/* Inline edit form. */
+.edit { flex: 1; display: flex; gap: 0.5rem; align-items: center; }
+.edit input { margin: 0; }
+
+/* Small uppercase section label, like the original "COMPLETED ITEMS". */
+.section-title {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--pico-muted-color);
+    margin: 1.25rem 0 0.25rem;
 }
 
-.edit-input {
-    flex: 1;
-    padding: 8px 12px;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    font-size: 16px;
-    font-family: inherit;
-}
-
-.edit-input:focus {
-    outline: none;
-    border-color: #1976d2;
-    box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
-}
-
-.save-edit-btn, .cancel-edit-btn {
-    padding: 8px 12px;
-    border: none;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.save-edit-btn {
-    background: #4caf50;
-    color: white;
-}
-
-.save-edit-btn:hover {
-    background: #45a049;
-}
-
-.save-edit-btn:disabled {
-    background: #cccccc;
-    cursor: not-allowed;
-}
-
-.cancel-edit-btn {
-    background: #f44336;
-    color: white;
-}
-
-.cancel-edit-btn:hover {
-    background: #da190b;
-}
+.empty { text-align: center; color: var(--pico-muted-color); margin: 1.5rem 0; }
