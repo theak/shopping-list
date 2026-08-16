@@ -1,0 +1,15 @@
+# Keep the runtime image lean: only ship the app (app.py, static/, templates/,
+# requirements.txt). Everything below is dev/CI/test tooling or VCS metadata.
+.git
+.github
+.gitignore
+.dockerignore
+node_modules
+test
+package.json
+package-lock.json
+docker-compose.yml
+README.md
+__pycache__
+*.pyc
+.DS_Store
