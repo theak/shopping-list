@@ -4,17 +4,17 @@
     <title>Shopping List</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/icon.png') }}">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/icon.png') }}">
+    <link rel="apple-touch-icon" href="/static/img/icon.png">
+    <link rel="icon" type="image/png" href="/static/img/icon.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Shopping List">
     <meta name="theme-color" content="#1976d2">
-    <link rel="manifest" href="{{ url_for('manifest', key=request.args.get('key')) }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/pico.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
-    <script defer src="{{ url_for('static', filename='js/alpine.min.js') }}"></script>
+    <link rel="manifest" href="{{manifest_href}}">
+    <link rel="stylesheet" href="/static/css/pico.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script defer src="/static/js/script.js"></script>
+    <script defer src="/static/js/alpine.min.js"></script>
 </head>
 <body>
     <main class="container" x-data="list" x-cloak>
