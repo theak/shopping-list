@@ -6,6 +6,9 @@ __pycache__/
 venv/
 .env
 
+# Node (test tooling)
+node_modules/
+
 # IDE
 .idea/
 .vscode/

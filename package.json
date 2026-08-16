@@ -1,0 +1,12 @@
+{
+  "name": "shopping-list",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Frontend tests for the Home Assistant shopping list proxy",
+  "scripts": {
+    "test": "node test/component.test.js && node test/integration.test.js"
+  },
+  "devDependencies": {
+    "jsdom": "^30.0.0"
+  }
+}
