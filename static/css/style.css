@@ -1,7 +1,7 @@
 /* Hide the Alpine template until it initializes (prevents a flash of raw markup). */
 [x-cloak] { display: none !important; }
 
-body { background: #f5f5f5; }
+body { background: #f5f5f5; min-height: 100vh; }
 .container { max-width: 640px; padding-block: 1.5rem; }
 
 /* Card shell with a colored header. */
