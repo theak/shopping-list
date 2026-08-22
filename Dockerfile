@@ -14,4 +14,6 @@ FROM scratch
 COPY --from=builder /app/target/release/shopping-list /shopping-list
 ENV PORT=42780
 EXPOSE 42780
+HEALTHCHECK --interval=5m --timeout=10s --start-period=1m --retries=3 \
+    CMD ["/shopping-list", "healthcheck"]
 ENTRYPOINT ["/shopping-list"]
