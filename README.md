@@ -1,6 +1,6 @@
 # Home Assistant Shopping List Proxy
 
-A minimal web app to proxy your Home Assistant Shopping List so you (and other family members) can view and update it, even externally when out on the go by exposing this app externally, without exposing much else. It works offline, installs to your home screen, and is blazingly fast (Rust backend, ~30kB frontend, docker container uses only ~15MB of RAM).
+A minimal web app to proxy your Home Assistant Shopping List so you (and other family members) can view and update it, even externally when out on the go by exposing this app externally, without exposing much else. It works offline, installs to your home screen, and is blazingly fast (Rust backend, ~30kB frontend, docker container uses only ~1MB of RAM).
 
 <img width="451" height="417" alt="image" src="https://github.com/user-attachments/assets/e965e50d-c96c-4c62-b3af-529f68de0402" />
 
