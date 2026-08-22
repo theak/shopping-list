@@ -1,6 +1,6 @@
 # Home Assistant Shopping List Proxy
 
-A minimal web app to surface your Home Assistant shopping list entity to the public internet so you can view and update it externally when you're out on the go, without exposing much else. It works offline (showing the last-loaded list) and installs to your home screen.
+A minimal web app to proxy your Home Assistant Shopping List so you (and other family members) can view and update it, even externally when out on the go by exposing this app externally, without exposing much else. It works offline, installs to your home screen, and is blazingly fast (Rust backend, ~30kB frontend, docker container uses only ~15MB of RAM).
 
 <img width="451" height="417" alt="image" src="https://github.com/user-attachments/assets/e965e50d-c96c-4c62-b3af-529f68de0402" />
 
@@ -80,8 +80,7 @@ docker compose up -d
 ## Development
 
 The server is written in Rust (axum) and runs as a single static binary. The frontend
-(`static/`, `templates/`) is plain Alpine.js + Pico CSS and is baked into the binary at
-build time, so the runtime image ships nothing but the executable.
+(`static/`, `templates/`) is plain Alpine.js + Pico CSS.
 
 Run locally:
 
