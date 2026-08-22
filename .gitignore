@@ -1,13 +1,11 @@
-# Python
-__pycache__/
-*.py[cod]
-*.so
-.Python
-venv/
-.env
+# Rust
+/target
 
-# Node (test tooling)
+# Node (frontend test tooling)
 node_modules/
+
+# Secrets / local env
+.env
 
 # IDE
 .idea/

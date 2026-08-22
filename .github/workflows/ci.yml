@@ -13,16 +13,28 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+
+      - name: Rust tests
+        run: cargo test --locked
+
+      - name: Rust release build
+        run: cargo build --release --locked
+
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: "npm"
 
-      - name: Install dependencies
+      - name: Install frontend test deps
         run: npm ci
 
-      - name: Run tests
+      - name: Frontend tests (jsdom)
         run: npm test
 
   build-and-push:

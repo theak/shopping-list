@@ -1,9 +1,14 @@
 services:
   shopping-list:
     image: akshaykannan/shopping-list
+    # To build locally instead of pulling from Docker Hub, uncomment:
+    # build: .
     ports:
       - "42780:42780"
     environment:
       - HA_URL=${HA_URL}
       - HA_TOKEN=${HA_TOKEN}
+      # Optional: require a ?key= query param for access. Keep the real value out of
+      # git (use an .env file next to this compose file).
+      # - SHOPPING_LIST_KEY=${SHOPPING_LIST_KEY}
     restart: unless-stopped
