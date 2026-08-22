@@ -79,7 +79,24 @@ docker compose up -d
 
 ## Development
 
-To build from source:
+The server is written in Rust (axum) and runs as a single static binary. The frontend
+(`static/`, `templates/`) is plain Alpine.js + Pico CSS and is baked into the binary at
+build time, so the runtime image ships nothing but the executable.
+
+Run locally:
+
+```bash
+HA_URL="http://your-ha-url:8123" HA_TOKEN="your-long-lived-token" cargo run
+```
+
+Run the tests:
+
+```bash
+cargo test          # Rust backend
+npm ci && npm test  # frontend (jsdom)
+```
+
+Build the Docker image:
 
 ```bash
 docker build . -t shopping-list

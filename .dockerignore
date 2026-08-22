@@ -1,5 +1,7 @@
-# Keep the runtime image lean: only ship the app (app.py, static/, templates/,
-# requirements.txt). Everything below is dev/CI/test tooling or VCS metadata.
+# The builder only needs the crate sources + the embedded frontend assets
+# (Cargo.toml, Cargo.lock, src/, templates/, static/). Everything below is
+# build output, dev/CI/test tooling, or VCS metadata.
+target
 .git
 .github
 .gitignore
@@ -10,6 +12,5 @@ package.json
 package-lock.json
 docker-compose.yml
 README.md
-__pycache__
-*.pyc
+.env
 .DS_Store

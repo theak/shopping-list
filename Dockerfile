@@ -1,12 +1,17 @@
-FROM python:3.11-alpine
-
+# ---- builder: static musl binary (rust:alpine targets musl by default) ----
+FROM rust:1-alpine AS builder
+# musl-dev provides the C toolchain that rustls' `ring` crypto backend compiles against.
+RUN apk add --no-cache musl-dev
 WORKDIR /app
+COPY Cargo.toml Cargo.lock ./
+COPY src ./src
+COPY templates ./templates
+COPY static ./static
+RUN cargo build --release --locked
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY . .
-
+# ---- runtime: nothing but the binary (frontend assets are baked into it) ----
+FROM scratch
+COPY --from=builder /app/target/release/shopping-list /shopping-list
+ENV PORT=42780
 EXPOSE 42780
-
-CMD ["waitress-serve", "--listen=0.0.0.0:42780", "app:app"]
+ENTRYPOINT ["/shopping-list"]
