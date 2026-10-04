@@ -33,7 +33,7 @@
                 </form>
 
                 <ul class="list">
-                    <template x-for="item in incomplete" :key="item.name">
+                    <template x-for="item in incomplete" :key="item.id || item.name">
                         <li>
                             <input type="checkbox" :checked="item.complete" :disabled="offline" @change="toggle(item)">
                             <span class="name" x-show="editing !== item.name" @click="startEdit(item)"
@@ -54,7 +54,7 @@
                     <section>
                         <h2 class="section-title">Completed</h2>
                         <ul class="list">
-                            <template x-for="item in complete" :key="item.name">
+                            <template x-for="item in complete" :key="item.id || item.name">
                                 <li>
                                     <input type="checkbox" :checked="item.complete" :disabled="offline" @change="toggle(item)">
                                     <s class="name" x-text="item.name"></s>

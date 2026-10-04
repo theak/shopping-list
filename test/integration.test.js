@@ -25,7 +25,7 @@ window.fetch = (url) => {
         return Promise.resolve({
             ok: true, status: 200,
             headers: { get: () => null },
-            json: async () => ({ items: [{ name: 'Milk', complete: false }, { name: 'Eggs', complete: true }] }),
+            json: async () => ({ items: [{ id: 'a', name: 'Milk', complete: false }, { id: 'b', name: 'Milk', complete: false }, { id: 'c', name: 'Eggs', complete: true }] }),
         });
     }
     return Promise.resolve({ ok: true, status: 200, headers: { get: () => null }, json: async () => ({ success: true }) });
@@ -52,12 +52,12 @@ async function run() {
     const check = (n, c) => { if (c) { pass++; console.log('  ok  -', n); } else { fail++; console.log('  FAIL-', n); } };
 
     const names = [...doc.querySelectorAll('.list .name')].map(el => el.textContent);
-    check('Alpine booted and rendered rows', names.length === 2);
+    check('Alpine booted and rendered rows', names.length === 3);
     check('incomplete item "Milk" rendered', names.includes('Milk'));
     check('complete item "Eggs" rendered', names.includes('Eggs'));
 
     const checkboxes = doc.querySelectorAll('.list input[type="checkbox"]');
-    check('rendered a checkbox per item', checkboxes.length === 2);
+    check('rendered a checkbox per item', checkboxes.length === 3);
 
     check('Completed section present (has a complete item)',
         [...doc.querySelectorAll('h2')].some(h => /Completed/.test(h.textContent)));
